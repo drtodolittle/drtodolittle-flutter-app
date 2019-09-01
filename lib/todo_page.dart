@@ -5,54 +5,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/src/foundation/diagnostics.dart';
 
 class ToDoPage extends StatelessWidget {
-  ToDoPage(this.user);
+  ToDoPage({Key key, this.title, this.user});
 
   final FirebaseUser user;
+  final String title;
 
   static const String routeName = '/todo';
-  final TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dr ToDo Little'),
+        title: Text(title),
       ),
-      body: Column(
-        children: <Widget>[_createToDoComposer(),],) 
-    );
-  }
-
-
-  Widget _createToDoComposer() {
-    return Container(
-      margin: new EdgeInsets.symmetric(horizontal: 4.0),
-      child: Row(
-        children: <Widget>[
-          TextField(
-            controller: _textController,
-            onSubmitted: _addToDo,
-            decoration: new InputDecoration.collapsed(
-              hintText: "Create new task"),
-          ),
-          Container(                                                 
-          margin: new EdgeInsets.symmetric(horizontal: 4.0),          
-          child: new IconButton(                                      
-            icon: new Icon(Icons.send),      
-            onPressed: () => _addToDo(_textController.text)), 
-        ),       
-        ],
+      body: ToDoList(user),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddToDoPage(user: user,)),);
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
-
-  _addToDo(String task) {
-    Firestore.instance.collection('users').document(user.uid).collection('todos').document().setData({'task':task, 'completed':false});
-    _textController.clear();
-  }
-
 }
 
 
@@ -74,9 +51,26 @@ class ToDoList extends StatelessWidget {
           default:
             return ListView(
               children: snapshot.data.documents.map((DocumentSnapshot document) {
-                return new ListTile(
-                  title: new Text(document['task']),
-                  subtitle: new Text(document['completed'].toString()),
+                return Row(
+                  
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(document['task']),
+                    ) ,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Checkbox(
+                        value: document['completed'], 
+                        onChanged: (bool value) {
+                          document.reference.updateData({'completed':value});
+                        },
+                      ),
+                    )
+                    
+                  ],
+                  
                 );
               }).toList(),
             );
@@ -84,4 +78,52 @@ class ToDoList extends StatelessWidget {
       },
     );
   }
+}
+
+
+class AddToDoPage extends StatelessWidget {
+
+  AddToDoPage({this.user});
+
+  final FirebaseUser user;
+  final TextEditingController _textController = TextEditingController();
+
+
+  @override
+  Widget build(BuildContext context) {
+        return Scaffold(
+      appBar: AppBar(
+        title: Text("Add ToDo"),
+      ),
+      body: 
+        Column(
+          children: <Widget>[
+            TextField(
+            controller: _textController,
+            onSubmitted: _addToDo,
+            decoration: new InputDecoration.collapsed(
+              hintText: "Create new task"),
+          ),
+            Center(
+              child: IconButton(                                    
+                icon: new Icon(Icons.send),      
+                onPressed: () { 
+                  _addToDo(_textController.text); 
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+
+          ],
+        )
+      
+    );
+
+  }
+
+  _addToDo (String task) {
+    Firestore.instance.collection('users').document(user.uid).collection('todos').document().setData({'task':task, 'completed':false});
+    _textController.clear();
+  }
+  
 }
