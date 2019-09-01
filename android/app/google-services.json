@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "26514656206",
+    "firebase_url": "https://dr-todo-little-250115.firebaseio.com",
+    "project_id": "dr-todo-little-250115",
+    "storage_bucket": "dr-todo-little-250115.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26514656206:android:8b8e6b25fd9199c9",
+        "android_client_info": {
+          "package_name": "de.drtodolittle.app.drtodolittle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26514656206-p38ai55qoro19ponpacfktivv6p4cstc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0j2SJKQBm5ayhZ1mPmsjiZGj_acxXgMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "26514656206-p38ai55qoro19ponpacfktivv6p4cstc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
